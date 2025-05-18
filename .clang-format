@@ -1,0 +1,3 @@
+BasedOnStyle: Google
+SortIncludes: false         # 关闭 include 排序
+IncludeBlocks: Preserve     # 保留原有的 include 分组/顺序
