@@ -16,6 +16,11 @@
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/server",
+  "command": "/usr/bin/c++   -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/timestamp.cpp.o -c /home/nemausa/one-millon-net/depends/src/timestamp.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/timestamp.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/server",
   "command": "/usr/bin/c++   -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/main.cpp.o -c /home/nemausa/one-millon-net/server/main.cpp",
   "file": "/home/nemausa/one-millon-net/server/main.cpp"
 },
@@ -33,6 +38,11 @@
   "directory": "/home/nemausa/one-millon-net/build/client",
   "command": "/usr/bin/c++   -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/message_header.cpp.o -c /home/nemausa/one-millon-net/depends/src/message_header.cpp",
   "file": "/home/nemausa/one-millon-net/depends/src/message_header.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/client",
+  "command": "/usr/bin/c++   -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/timestamp.cpp.o -c /home/nemausa/one-millon-net/depends/src/timestamp.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/timestamp.cpp"
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/client",
