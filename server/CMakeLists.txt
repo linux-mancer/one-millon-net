@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 set(TARGET_NAME client)
 
@@ -9,6 +9,13 @@ file(GLOB ${PROJECT_NAME}_SRC
 
 list (SORT ${PROJECT_NAME}_SRC)
 add_executable(${TARGET_NAME} ${${PROJECT_NAME}_SRC} )
+
+find_package(Threads REQUIRED)
+target_link_libraries(${TARGET_NAME}
+    PRIVATE
+      Threads::Threads
+)
+
 
 # 只给这个 target 加额外警告选项
 target_compile_options(${TARGET_NAME}
