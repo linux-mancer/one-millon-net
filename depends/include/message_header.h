@@ -25,7 +25,7 @@ enum class Cmd : int {
 };
 
 struct DataHeader {
-  std::uint16_t data_length;
+  uint16_t data_length;
   Cmd cmd;
   DataHeader() : data_length(sizeof(DataHeader)), cmd(Cmd::kError) {}
 };

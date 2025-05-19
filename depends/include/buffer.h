@@ -27,7 +27,7 @@ class Buffer {
    * @return True if the data was written successfully; false if there was not
    * enough free space.
    */
-  bool Push(const char* data, int length) noexcept;
+  bool Push(const char* data, size_t length) noexcept;
 
   /**
    * @brief Consumes (removes) bytes from the front of the buffer.
@@ -39,7 +39,7 @@ class Buffer {
   int WriteToSocket(int sockfd);
   int ReadFromSocket(int sockfd);
 
-  bool HasData() const noexcept { return size_ > 0; };
+  bool HasData() const;
 
   const char* data() const noexcept { return data_; }
   inline bool NeedWrite() const { return head_ > 0; }
@@ -48,8 +48,8 @@ class Buffer {
 
  private:
   char* data_ = nullptr;
-  int head_ = 0;
-  int size_ = 0;
+  size_t head_ = 0;
+  size_t size_ = 0;
   int full_count_ = 0;
 };
 

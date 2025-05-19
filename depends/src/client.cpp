@@ -44,9 +44,9 @@ int Client::SendData(const DataHeader *header) {
   return SendData((const char*)header, header->data_length);
 }
 
-int Client::SendData(const char *data, int length) {
+int Client::SendData(const char *data, size_t length) {
   if (send_buffer_.Push(data, length)) {
-    return len;
+    return length;
   }
   return SOCKET_ERROR;
 }

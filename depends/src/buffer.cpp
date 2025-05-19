@@ -1,4 +1,6 @@
 #include "buffer.h"
+#include "cell.h"
+#include "message_header.h"
 
 Buffer::Buffer(size_t capacity) {
   size_ = capacity;
@@ -12,7 +14,7 @@ Buffer::~Buffer() {
   }
 }
 
-bool Buffer::Push(const char* data, int length) noexcept {
+bool Buffer::Push(const char* data, size_t length) noexcept {
   if (head_ + length <= size_) {
     memcpy(data_ + head_, data, length);
     head_ += length;
@@ -44,7 +46,7 @@ int Buffer::WriteToSocket(int sockfd) {
     if (ret <= 0) {
       return SOCKET_ERROR;
     }
-    if (ret == head_) {
+    if (ret >= 0 && static_cast<size_t>(ret) == head_) {
       head_ = 0;
     } else {
       head_ -= ret;
@@ -53,4 +55,27 @@ int Buffer::WriteToSocket(int sockfd) {
     full_count_ = 0;
   }
   return ret;
+}
+
+int Buffer::ReadFromSocket(int sockfd) {
+  if (size_ - head_ > 0) {
+    char* sz_recv = data_ + head_;
+    int len = static_cast<int>(recv(sockfd, sz_recv, size_ - head_, 0));
+    if (len < 0) {
+      // TODO
+      // LOG
+      return SOCKET_ERROR;
+    }
+    head_ += len;
+    return len;
+  }
+  return 0;
+}
+
+bool Buffer::HasData() const {
+  if (head_ >= sizeof(DataHeader)) {
+    DataHeader* header = (DataHeader*)data_;
+    return head_ >= header->data_length;
+  }
+  return false;
 }
