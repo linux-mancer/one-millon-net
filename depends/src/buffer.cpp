@@ -44,6 +44,8 @@ int Buffer::WriteToSocket(int sockfd) {
   if (head_ > 0 && INVALID_SOCKET != sockfd) {
     ret = send(sockfd, data_, head_, 0);
     if (ret <= 0) {
+      LOG(ERROR) << "WriteToSocket: sockf<" << sockfd << "> size<" << size_
+                 << "> head<" << head_ << "> ret<" << ret;
       return SOCKET_ERROR;
     }
     if (ret >= 0 && static_cast<size_t>(ret) == head_) {

@@ -15,6 +15,8 @@
 
 #include <cstddef>
 #include <stdio.h>
+#include <glog/logging.h>
+#include <vector>
 
 #ifdef _WIN32
 
@@ -34,6 +36,7 @@
 #include <signal.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/epoll.h>
 #define SOCKET int
 #define INVALID_SOCKET (SOCKET)(~0)
 #define SOCKET_ERROR (-1)

@@ -6,7 +6,6 @@
  * @ingroup PackageName
  * (note: this needs exactly one @defgroup somewhere)
  *
- * @date 2025-05-19-22-04
  * @author Nemausa
  */
 

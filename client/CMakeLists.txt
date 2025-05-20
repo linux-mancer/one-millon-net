@@ -11,9 +11,11 @@ list (SORT ${PROJECT_NAME}_SRC)
 add_executable(${TARGET_NAME} ${${PROJECT_NAME}_SRC} )
 
 find_package(Threads REQUIRED)
+find_package(glog REQUIRED)
 target_link_libraries(${TARGET_NAME}
     PRIVATE
       Threads::Threads
+      glog::glog
 )
 
 # 只给这个 target 加额外警告选项
