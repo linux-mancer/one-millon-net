@@ -4,8 +4,9 @@
 #include <mutex>
 
 Server::~Server() {
-  LOG(INFO) << "Server " << id_ << " end";
+  LOG(INFO) << "Server exit " << id_ << " begin";
   Close();
+  LOG(INFO) << "Server exit " << id_ << " end";
 }
 
 void Server::SetId(int id) {
@@ -132,4 +133,9 @@ void Server::ClearAllClients_() {
     delete c;
   }
   new_clients_.clear();
+}
+
+std::map<SOCKET, Client*>& Server::clients() {
+  std::lock_guard<std::mutex> lock(clients_mutex_);
+  return clients_;
 }

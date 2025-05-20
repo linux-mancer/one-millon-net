@@ -28,13 +28,14 @@ class Server {
  public:
   virtual ~Server();
   void SetId(int id);
-  void SetClientCapacity(int max_clients);
   void SetEventHandler(NetworkEventListener* handler);
 
   void Start();
   void Close();
   void AddClient(Client* client);
   size_t GetClientCount() const;
+
+  virtual void SetClientCapacity(int max_clients);
 
  protected:
   virtual bool ProcessNetworkEvents() = 0;
@@ -50,6 +51,7 @@ class Server {
   void CheckHeartbeats_();
   void DispatchMessage_();
   void ClearAllClients_();
+  std::map<SOCKET, Client*>& clients();
 
  private:
   std::map<SOCKET, Client*> clients_;

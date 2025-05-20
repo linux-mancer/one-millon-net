@@ -1,50 +1,42 @@
 #include "task_server.h"
-#include <iterator>
 #include <mutex>
+#include "server.h"
+#include "thread.hpp"
 
-TaskServer::TaskServer(int server_id) : server_id_(server_id) {}
-
-TaskServer::~TaskServer() { Stop(); }
+void TaskServer::AddTask(Task task) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  tasks_buffer_.push_back(task);
+}
 
 void TaskServer::Start() {
-  bool expected = false;
-  if (running_.compare_exchange_strong(expected, true)) {
-    worker_thread_ = std::thread(&TaskServer::Run, this);
-  }
-}
-
-void TaskServer::Stop() {
-  running_.store(false);
-  cond_var_.notify_one();
-  if (worker_thread_.joinable()) {
-    worker_thread_.join();
-  }
-}
-
-void TaskServer::AddTask(const std::function<void()>& task) {
-  {
-    std::lock_guard<std::mutex> lock(mutex_);
-    tasks_.push(task);
-  }
-  cond_var_.notify_one();
+  thread_.Start(nullptr, [this](Thread* pthread) { RunLoop(pthread); });
 }
 
 void TaskServer::set_server_id(int id) {
   server_id_ = id;
 }
+void TaskServer::Stop() { thread_.Stop(); }
 
-void TaskServer::Run() {
-  std::unique_lock<std::mutex> lock(mutex_);
-  while (running_.load() || !tasks_.empty()) {
-    cond_var_.wait(lock,
-                   [this] { return !running_.load() || !tasks_.empty(); });
-
-    while (!tasks_.empty()) {
-      auto task = std::move(tasks_.front());
-      tasks_.pop();
-      lock.unlock();
-      task();
-      lock.lock();
+void TaskServer::RunLoop(Thread* thread) {
+  while (thread->IsRunning()) {
+    if (!tasks_buffer_.empty()) {
+      std::lock_guard<std::mutex> lock(mutex_);
+      for (auto task : tasks_buffer_) {
+        tasks_.push_back(task);
+      }
+      tasks_buffer_.clear();
     }
+    if (tasks_.empty()) {
+      Thread::Sleep(1);
+      continue;
+    }
+    for (auto task : tasks_) {
+      task();
+    }
+    tasks_.clear();
+  }
+  // 线程停止了，也要处理缓冲区的任务
+  for (auto task : tasks_buffer_) {
+    task();
   }
 }
