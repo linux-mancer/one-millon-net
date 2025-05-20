@@ -4,7 +4,7 @@
 
 TaskServer::TaskServer(int server_id) : server_id_(server_id) {}
 
-TaskServer::~TaskServer() { Stop();}
+TaskServer::~TaskServer() { Stop(); }
 
 void TaskServer::Start() {
   bool expected = false;
@@ -21,20 +21,23 @@ void TaskServer::Stop() {
   }
 }
 
-void TaskServer::AddTask(const std::function<void()>&task) {
+void TaskServer::AddTask(const std::function<void()>& task) {
   {
     std::lock_guard<std::mutex> lock(mutex_);
     tasks_.push(task);
-  } 
+  }
   cond_var_.notify_one();
+}
+
+void TaskServer::set_server_id(int id) {
+  server_id_ = id;
 }
 
 void TaskServer::Run() {
   std::unique_lock<std::mutex> lock(mutex_);
   while (running_.load() || !tasks_.empty()) {
-    cond_var_.wait(lock, [this] {
-      return !running_.load() || !tasks_.empty();
-    });
+    cond_var_.wait(lock,
+                   [this] { return !running_.load() || !tasks_.empty(); });
 
     while (!tasks_.empty()) {
       auto task = std::move(tasks_.front());

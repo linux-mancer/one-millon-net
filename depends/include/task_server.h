@@ -64,12 +64,12 @@ class TaskServer {
    * @param task Callable with no arguments and no return value.
    */
   void AddTask(const std::function<void()>& task);
-
+  void set_server_id(int id);
  private:
   /** Main loop run by the worker thread. */
   void Run();
 
-  const int server_id_;               ///< Server identifier.
+  int server_id_;               ///< Server identifier.
   std::atomic<bool> running_{false};  ///< Controls the Run loop.
   std::thread worker_thread_;         ///< The worker thread.
 
