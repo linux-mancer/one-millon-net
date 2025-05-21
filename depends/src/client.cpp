@@ -41,7 +41,7 @@ int Client::SendDataReal() {
 }
 
 int Client::SendData(const DataHeader *header) {
-  return SendData((const char*)header, header->data_length);
+  return SendData((const char *)header, header->data_length);
 }
 
 int Client::SendData(const char *data, size_t length) {
@@ -65,7 +65,7 @@ bool Client::CheckHeart(time_t dt) {
   return false;
 }
 
-bool Client::CheckSend(time_t dt){
+bool Client::CheckSend(time_t dt) {
   dt_send_ += dt;
   if (dt_send_ >= kClientSendBuffTime) {
     SendDataReal();
@@ -75,3 +75,11 @@ bool Client::CheckSend(time_t dt){
 
   return false;
 }
+
+int Client::recv_msg_id() { return recv_msg_id_; }
+
+int Client::recv_msg_id_next() { return ++recv_msg_id_; }
+
+int Client::send_msg_id() { return send_msg_id_; }
+
+int Client::send_msg_id_next() { return ++send_msg_id_; }

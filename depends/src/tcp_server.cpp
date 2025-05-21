@@ -131,8 +131,8 @@ void TcpServer::OnMessageReceived(Server *server, Client *client,
 void TcpServer::PrintMsg() {
   auto t = timer_.Elapsed() / 1000.0;
   if (t > 1.0) {
-    LOG(INFO) << "thread " << servers_.size() << "time " << t << "socket "
-              << sockfd_ << " Accept " << client_accept_ << " Join "
+    LOG(INFO) << "thread " << servers_.size() << " time " << t << " socket "
+              << sockfd_ << " accept " << client_accept_ << " join "
               << client_join_ << " recv " << recv_count_ << " msg "
               << msg_count_;
     recv_count_ = 0;

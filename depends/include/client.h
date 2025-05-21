@@ -26,7 +26,6 @@ class Client {
   Client(SOCKET sock_fd, int send_size, int recv_size);
   ~Client();
   void Destroy();
-  SOCKET sock_fd();
 
   int RecvData();
   bool HasMsg() const;
@@ -42,6 +41,12 @@ class Client {
   void ResetSendbeat();
   bool CheckHeart(time_t dt);
   bool CheckSend(time_t dt);
+
+  SOCKET sock_fd();
+  int recv_msg_id();
+  int recv_msg_id_next();
+  int send_msg_id();
+  int send_msg_id_next();
 
  private:
   int id_ = -1;
