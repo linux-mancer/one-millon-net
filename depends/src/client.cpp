@@ -57,9 +57,9 @@ void Client::ResetSendbeat() { dt_send_ = 0; }
 
 bool Client::CheckHeart(time_t dt) {
   dt_heart_ += dt;
+  LOG(INFO) << "CheckHeart" << dt_heart_;
   if (dt_heart_ >= kClientHeartDeadTime) {
-    // TODO
-    // log
+    LOG(INFO) << "CheckHeart dead:s=" << sock_fd_ <<" time=" << dt_heart_;
     return true;
   }
   return false;

@@ -78,9 +78,7 @@ void Server::Run(Thread* thread) {
 void Server::HandleNewClients_() {
   std::lock_guard<std::mutex> lk(clients_mutex_);
   for (Client* c : new_clients_) {
-    // TODO
-    // c->set_server_id(id_);
-    clients_.emplace(c->sock_fd(), c);
+    clients_[c->sock_fd()] =c;
     if (event_handler_) {
       event_handler_->OnClientConnected(c);
     }
@@ -98,15 +96,15 @@ void Server::CheckHeartbeats_() {
   for (auto it = clients_.begin(); it != clients_.end();) {
     Client* c = it->second;
     if (c->CheckHeart(dt)) {
-      if (event_handler_) {
-        event_handler_->OnClientDisconnected(c);
-      }
+      // if (event_handler_) {
+      //   event_handler_->OnClientDisconnected(c);
+      // }
       OnClientLeave(c);
-      delete c;
+      // delete c;
       it = clients_.erase(it);
-    } else {
-      ++it;
-    }
+      continue;
+    } 
+      it++;
   }
 }
 
