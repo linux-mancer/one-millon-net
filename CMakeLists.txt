@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project (one_million_net)
 
-set (default_build_type "RelWithDebInfo")
+set (default_build_type "Debug")
 if(NOT CMAKE_BUILD_TYPE)
    message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
    set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
