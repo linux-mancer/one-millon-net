@@ -1,9 +1,9 @@
 #include "epoll_wrapper.h"
 #include <bits/stdint-uintn.h>
 #include <cstring>
+#include "network.hpp"
 
-EpollWrapper::EpollWrapper(int max_events)
-    : max_events_(max_events), events_(max_events_) {}
+EpollWrapper::EpollWrapper() {}
 
 EpollWrapper::~EpollWrapper() { Close(); }
 
@@ -27,18 +27,24 @@ EpollWrapper& EpollWrapper::operator=(EpollWrapper&& other) noexcept {
   return *this;
 }
 
-bool EpollWrapper::Init() {
+int EpollWrapper::Init(int max_events) {
+  if (epoll_fd_ > 0) {
+    Close();
+  }
   epoll_fd_ = epoll_create1(EPOLL_CLOEXEC);
   if (epoll_fd_ < 0) {
     LOG(ERROR) << "epoll_create1 failed: " << std::strerror(errno);
-    return false;
+    return epoll_fd_;
   }
-  return true;
+  events_.clear();
+  events_.resize(max_events);
+  max_events_ = max_events;
+  return epoll_fd_;
 }
 
 void EpollWrapper::Close() {
   if (epoll_fd_ > 0) {
-    ::close(epoll_fd_);
+    Netowrk::DestroySocket(epoll_fd_);
     epoll_fd_ = -1;
   }
   events_.clear();

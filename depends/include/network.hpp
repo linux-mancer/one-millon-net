@@ -74,7 +74,7 @@ class Netowrk {
   static bool SetSockOpt(SOCKET fd, int level, int optname) noexcept {
     if (setsockopt(fd, level, optname, reinterpret_cast<const char*>(&kOn),
                    sizeof(kOn)) == SOCKET_ERROR) {
-      LOG(WARNING) << "setsockopt " << fd < " opt " << opt << " failed";
+      LOG(WARNING) << "setsockopt " << fd << " opt " << optname << " failed";
       return false;
     }
     return true;

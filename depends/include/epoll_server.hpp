@@ -66,7 +66,7 @@ class EpollServer : Server {
   void RemoveClient(Client* pclient) {
     auto iter = clients().find(pclient->sock_fd());
     if (iter != clients.end()) {
-      // clients().earse(iter);
+      clients().earse(iter);
     }
     OnClientLeave(pclient);
   }

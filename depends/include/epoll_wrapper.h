@@ -16,7 +16,7 @@
 
 class EpollWrapper {
  public:
-  explicit EpollWrapper(int max_events);
+  EpollWrapper();
   ~EpollWrapper();
 
   EpollWrapper(const EpollWrapper &) = delete;
@@ -24,7 +24,7 @@ class EpollWrapper {
   EpollWrapper(EpollWrapper &&) noexcept;
   EpollWrapper &operator=(EpollWrapper &&) noexcept;
 
-  bool Init();
+  int Init(int max_events);
   void Close();
 
   bool Register(int fd, uint32_t events, void *prt = nullptr);

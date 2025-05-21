@@ -18,6 +18,7 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
+#include "semaphore.hpp"
 
 class Thread {
  public:
@@ -42,6 +43,7 @@ class Thread {
       on_run_ = on_run;
       on_destroy_ = on_destroy;
       worker_ = std::thread(&Thread::ThreadFunc, this);
+      worker_.detach();
     }
   }
 
@@ -51,11 +53,8 @@ class Thread {
         std::lock_guard<std::mutex> lk(mutex_);
         exit_requested = true;
       }
-      cv_.notify_one();
-      if (worker_.joinable()) {
-        worker_.join();
-      }
       running_ = false;
+      semaphore_.Wait();
     }
   }
 
@@ -73,13 +72,11 @@ class Thread {
     if (on_run_) {
       on_run_(this);
     }
-    {
-      std::unique_lock<std::mutex> lk(mutex_);
-      cv_.wait(lk, [this] { return exit_requested.load(); });
-    }
     if (on_destroy_) {
       on_destroy_(this);
     }
+    semaphore_.Signal();
+    running_ = false;
   }
 
  private:
@@ -87,7 +84,8 @@ class Thread {
   std::atomic<bool> running_{false};
   std::atomic<bool> exit_requested{false};
   std::mutex mutex_;
-  std::condition_variable cv_;
+  // std::condition_variable cv_;
+  Semaphore semaphore_;
 
   Callback on_create_;
   Callback on_run_;
