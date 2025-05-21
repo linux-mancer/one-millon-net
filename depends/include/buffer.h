@@ -17,28 +17,12 @@
 
 class Buffer {
  public:
-  explicit Buffer(size_t capacity);
+  explicit Buffer(size_t capacity = 8192);
   ~Buffer();
-
-  /**
-   * @brief Writes data into the buffer
-   * @param data the byye to write
-   * @param length the length
-   * @return True if the data was written successfully; false if there was not
-   * enough free space.
-   */
   bool Push(const char* data, size_t length) noexcept;
-
-  /**
-   * @brief Consumes (removes) bytes from the front of the buffer.
-   * @param bytes Number of the bytes to remove (must not exceed the current
-   * readable size).
-   */
   void Consume(size_t bytes);
-
   int WriteToSocket(int sockfd);
   int ReadFromSocket(int sockfd);
-
   bool HasData() const;
 
   const char* data() const noexcept { return data_; }

@@ -1,5 +1,6 @@
 #include "epoll_wrapper.h"
 #include <bits/stdint-uintn.h>
+#include <sys/epoll.h>
 #include <cstring>
 #include "network.hpp"
 
@@ -31,14 +32,13 @@ int EpollWrapper::Init(int max_events) {
   if (epoll_fd_ > 0) {
     Close();
   }
-  epoll_fd_ = epoll_create1(EPOLL_CLOEXEC);
+  max_events_ = max_events;
+  epoll_fd_ = epoll_create(max_events_);
   if (epoll_fd_ < 0) {
-    LOG(ERROR) << "epoll_create1 failed: " << std::strerror(errno);
+    LOG(ERROR) << "epoll_create failed: " << std::strerror(errno);
     return epoll_fd_;
   }
-  events_.clear();
-  events_.resize(max_events);
-  max_events_ = max_events;
+  events_ = new epoll_event[max_events_];
   return epoll_fd_;
 }
 
@@ -47,7 +47,11 @@ void EpollWrapper::Close() {
     Netowrk::DestroySocket(epoll_fd_);
     epoll_fd_ = -1;
   }
-  events_.clear();
+
+  if (events_) {
+    delete[] events_;
+    events_ = nullptr;
+  }
 }
 
 bool EpollWrapper::Control(int op, int fd, uint32_t events, void* ptr) {
@@ -79,7 +83,7 @@ bool EpollWrapper::Unregister(int fd) {
 }
 
 int EpollWrapper::Wait(int timeout_ms) {
-  int n = ::epoll_wait(epoll_fd_, events_.data(), max_events_, timeout_ms);
+  int n = ::epoll_wait(epoll_fd_, events_, max_events_, timeout_ms);
   if (n < 0) {
     if (errno == EINTR) {
       LOG(WARNING) << "epoll_wait interrupted by signal";
@@ -90,3 +94,7 @@ int EpollWrapper::Wait(int timeout_ms) {
   }
   return n;
 }
+
+epoll_event* EpollWrapper::events() const { return events_; }
+
+int EpollWrapper::max_events() const { return max_events_; }

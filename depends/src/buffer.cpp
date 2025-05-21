@@ -63,9 +63,9 @@ int Buffer::ReadFromSocket(int sockfd) {
   if (size_ - head_ > 0) {
     char* sz_recv = data_ + head_;
     int len = static_cast<int>(recv(sockfd, sz_recv, size_ - head_, 0));
-    if (len < 0) {
-      // TODO
-      // LOG
+    if (len <= 0) {
+      LOG(ERROR) << "ReadFromSocket:sockfd<" << sockfd << "> size<" << size_
+                 << "> head<" << head_ << "> len<" << len << ">";
       return SOCKET_ERROR;
     }
     head_ += len;

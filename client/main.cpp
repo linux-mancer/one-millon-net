@@ -20,7 +20,6 @@ int msg_count = 1;
 int send_sleep = 1;
 int check_send_back = true;
 
-
 std::atomic_int send_count(0);
 std::atomic_int ready_count(0);
 std::atomic_int connect_count(0);
@@ -110,9 +109,9 @@ int main(int argc, char* argv[]) {
   const char* sz_ip = ip_str.c_str();
   port = Config::GetInstance().GetInt("port", 4567);
   thread_count = Config::GetInstance().GetInt("thread_count", 1);
-  client_count = Config::GetInstance().GetInt("client_count", 10000);
+  client_count = Config::GetInstance().GetInt("client_count", 10);
   msg_count = Config::GetInstance().GetInt("msg_count", 10);
-  send_sleep = Config::GetInstance().GetInt("send_sleep", 100);
+  send_sleep = Config::GetInstance().GetInt("send_sleep", 1000);
   work_sleep = Config::GetInstance().GetInt("work_sleep", 1);
   check_send_back = Config::GetInstance().GetInt("check_send_back");
   send_buffer_size =

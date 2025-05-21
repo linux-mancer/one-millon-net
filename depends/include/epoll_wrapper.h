@@ -12,6 +12,7 @@
 #ifndef EPOLL_WRAPPER_H_
 #define EPOLL_WRAPPER_H_
 
+#include <sys/epoll.h>
 #include "cell.h"
 
 class EpollWrapper {
@@ -32,14 +33,14 @@ class EpollWrapper {
   bool Unregister(int fd);
 
   int Wait(int timeout_ms);
-  const std::vector<epoll_event> &events() const { return events_; }
-  int max_events() const { return max_events_; }
+  epoll_event* events() const;
+  int max_events() const;
 
  private:
   bool Control(int op, int fd, uint32_t events, void *ptr);
   int epoll_fd_{-1};
   int max_events_{0};
-  std::vector<epoll_event> events_;
+  epoll_event* events_ = nullptr;
 };
 
 #endif  // EPOLL_WRAPPER_H_

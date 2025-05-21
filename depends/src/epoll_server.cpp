@@ -11,9 +11,9 @@ void EpollServer::SetClientCapacity(int max_clients) {
 bool EpollServer::ProcessNetworkEvents() {
   for (auto iter : clients()) {
     if (iter.second->NeedWrite()) {
-      epoll_.Modify(iter.second->sock_fd(), EPOLLIN | EPOLLOUT);
+      epoll_.Modify(iter.second->sock_fd(), EPOLLIN | EPOLLOUT, iter.second);
     } else {
-      epoll_.Modify(iter.second->sock_fd(), EPOLLIN);
+      epoll_.Modify(iter.second->sock_fd(), EPOLLIN, iter.second);
     }
   }
 
