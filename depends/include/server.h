@@ -40,7 +40,7 @@ class Server {
  protected:
   virtual bool ProcessNetworkEvents() = 0;
   virtual void OnClientJoin(Client*) {}
-  virtual void OnClientLeave(Client*) {}
+  virtual void OnClientLeave(Client*);
   virtual void OnMessage(Client*, DataHeader*) {}
   int ReceiveData(Client* client);
   std::map<SOCKET, Client*>& clients();

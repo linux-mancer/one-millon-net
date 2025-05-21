@@ -137,3 +137,8 @@ std::map<SOCKET, Client*>& Server::clients() {
   std::lock_guard<std::mutex> lock(clients_mutex_);
   return clients_;
 }
+
+void Server::OnClientLeave(Client* client) {
+if (event_handler_)
+    event_handler_->OnClientDisconnected(client);
+}

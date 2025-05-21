@@ -83,12 +83,13 @@ bool EpollWrapper::Unregister(int fd) {
 }
 
 int EpollWrapper::Wait(int timeout_ms) {
-  int n = ::epoll_wait(epoll_fd_, events_, max_events_, timeout_ms);
+  int n;
+  // 如果被信号中断（EINTR），自动重试
+  do {
+    n = ::epoll_wait(epoll_fd_, events_, max_events_, timeout_ms);
+  } while (n < 0 && errno == EINTR);
+
   if (n < 0) {
-    if (errno == EINTR) {
-      LOG(WARNING) << "epoll_wait interrupted by signal";
-      return 0;
-    }
     LOG(ERROR) << "epoll_wait failed: " << std::strerror(errno);
     return -1;
   }
