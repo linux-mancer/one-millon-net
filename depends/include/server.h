@@ -43,6 +43,7 @@ class Server {
   virtual void OnClientLeave(Client*) {}
   virtual void OnMessage(Client*, DataHeader*) {}
   int ReceiveData(Client* client);
+  std::map<SOCKET, Client*>& clients();
 
  private:
   void Run(Thread* thread);
@@ -51,7 +52,6 @@ class Server {
   void CheckHeartbeats_();
   void DispatchMessage_();
   void ClearAllClients_();
-  std::map<SOCKET, Client*>& clients();
 
  private:
   std::map<SOCKET, Client*> clients_;

@@ -21,6 +21,21 @@
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/server",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/epoll_server.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_server.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/epoll_server.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/server",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/epoll_tcp_client.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_tcp_client.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/epoll_tcp_client.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/server",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/epoll_tcp_server.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_tcp_server.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/epoll_tcp_server.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/server",
   "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/epoll_wrapper.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_wrapper.cpp",
   "file": "/home/nemausa/one-millon-net/depends/src/epoll_wrapper.cpp"
 },
@@ -51,8 +66,8 @@
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/server",
-  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/tcp_epoll_client.cpp.o -c /home/nemausa/one-millon-net/depends/src/tcp_epoll_client.cpp",
-  "file": "/home/nemausa/one-millon-net/depends/src/tcp_epoll_client.cpp"
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/__/depends/src/tcp_server.cpp.o -c /home/nemausa/one-millon-net/depends/src/tcp_server.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/tcp_server.cpp"
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/server",
@@ -78,6 +93,21 @@
   "directory": "/home/nemausa/one-millon-net/build/client",
   "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/config.cpp.o -c /home/nemausa/one-millon-net/depends/src/config.cpp",
   "file": "/home/nemausa/one-millon-net/depends/src/config.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/client",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/epoll_server.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_server.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/epoll_server.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/client",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/epoll_tcp_client.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_tcp_client.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/epoll_tcp_client.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/client",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/epoll_tcp_server.cpp.o -c /home/nemausa/one-millon-net/depends/src/epoll_tcp_server.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/epoll_tcp_server.cpp"
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/client",
@@ -111,8 +141,8 @@
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/client",
-  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/tcp_epoll_client.cpp.o -c /home/nemausa/one-millon-net/depends/src/tcp_epoll_client.cpp",
-  "file": "/home/nemausa/one-millon-net/depends/src/tcp_epoll_client.cpp"
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/server.dir/__/depends/src/tcp_server.cpp.o -c /home/nemausa/one-millon-net/depends/src/tcp_server.cpp",
+  "file": "/home/nemausa/one-millon-net/depends/src/tcp_server.cpp"
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/client",

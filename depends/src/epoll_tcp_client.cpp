@@ -1,16 +1,16 @@
-#include "tcp_epoll_client.h"
+#include "epoll_tcp_client.h"
 
-void TcpEpollClient::OnInitSocket() {
-  epoll_wrapper_.Init(1);
-  epoll_wrapper_.Register(client()->sock_fd(), EPOLLIN, client());
+void EpollTcpClient::OnInitSocket() {
+  epoll_.Init(1);
+  epoll_.Register(client()->sock_fd(), EPOLLIN, client());
 }
 
-void TcpEpollClient::Close() {
-  epoll_wrapper_.Close();
+void EpollTcpClient::Close() {
+  epoll_.Close();
   TcpClient::Close();
 }
 
-bool TcpEpollClient::Run(int timeout_us) {
+bool EpollTcpClient::Run(int timeout_us) {
   if (!is_connected()) {
     return false;
   }
@@ -21,11 +21,11 @@ bool TcpEpollClient::Run(int timeout_us) {
     events |= EPOLLOUT;
   }
 
-  epoll_wrapper_.Modify(client_ptr->sock_fd(), events, client_ptr);
+  epoll_.Modify(client_ptr->sock_fd(), events, client_ptr);
 
-  int n = epoll_wrapper_.Wait(timeout_us);
+  int n = epoll_.Wait(timeout_us);
   if (n < 0) {
-    LOG(ERROR) << "TcpEpollClient Run ";
+    LOG(ERROR) << "EpollTcpClient Run ";
     return false;
   }
 
@@ -33,7 +33,7 @@ bool TcpEpollClient::Run(int timeout_us) {
     return true;
   }
 
-  const auto& buffer = epoll_wrapper_.events();
+  const auto& buffer = epoll_.events();
   for (int i = 0; i < n; ++i) {
     Client* client_ptr = static_cast<Client*>(buffer[i].data.ptr);
     if (!client_ptr) continue;

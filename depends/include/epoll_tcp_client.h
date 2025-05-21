@@ -19,14 +19,14 @@
 #include "tcp_client.h"
 #include "epoll_wrapper.h"
 
-class TcpEpollClient : public TcpClient {
+class EpollTcpClient : public TcpClient {
  public:
   void OnInitSocket() override;
   void Close() override;
   bool Run(int timeout_us) override;
 
  private:
-  EpollWrapper epoll_wrapper_;
+  EpollWrapper epoll_;
 };
 
 #endif  // TPC_EPOLL_CLIENT_H_

@@ -1,62 +1,60 @@
-/**
- * @file timestamp.hpp
- *
- * @brief This message displayed in Doxygen Files index
- *
- * @ingroup PackageName
- * (note: this needs exactly one @defgroup somewhere)
- *
- * @author Nemausa
- */
-
-#ifndef TIMESTAMP_H_
-#define TIMESTAMP_H_
+#ifndef TIMESTAMP_HPP
+#define TIMESTAMP_HPP
 
 #include <chrono>
 #include <cstdint>
-#include <memory>
 #include <string>
 #include <sstream>
-#include <strstream>
 #include <type_traits>
+
+template <typename D>
+struct DurationSuffix {
+  static constexpr const char* value = "";
+};
+
+template <>
+struct DurationSuffix<std::chrono::microseconds> {
+  static constexpr const char* value = "µs";
+};
+
+template <>
+struct DurationSuffix<std::chrono::milliseconds> {
+  static constexpr const char* value = "ms";
+};
+
+template <>
+struct DurationSuffix<std::chrono::seconds> {
+  static constexpr const char* value = "s";
+};
 
 template <typename ClockType = std::chrono::steady_clock,
           typename DurationType = std::chrono::microseconds>
-
 class Timer {
  public:
-  Timer() : start_time_(ClockType::now()) {}
-  void Reset() { start_time_ = ClockType::now(); }
+  Timer() noexcept : start_time_(ClockType::now()) {}
+  ~Timer() = default;
 
-  int64_t Elapsed() const {
-    return std::chrono::duration_cast << DurationType >
-           (ClockType::now - start_time_).count();
+  void Reset() noexcept { start_time_ = ClockType::now(); }
+
+  DurationType ElapsedDuration() const noexcept {
+    return std::chrono::duration_cast<DurationType>(ClockType::now() -
+                                                    start_time_);
   }
+
+  int64_t Elapsed() const noexcept { return ElapsedDuration().count(); }
 
   std::string ElapsedString() const {
     std::ostringstream oss;
-    oss << Elapsed() << DurationUnitSuffix();
+    oss << Elapsed() << DurationSuffix<DurationType>::value;
     return oss.str();
   }
 
  private:
   typename ClockType::time_point start_time_;
-  static constexpr const char* DurationUnitSuffix() {
-    if constexpr (std::is_same_v<DurationType, std::chrono::microseconds>) {
-      return "µs";
-    } else if constexpr (std::is_same_v<DurationType,
-                                        std::chrono::milliseconds>) {
-      return "ms";
-    } else if constexpr (std::is_same_v<DurationType, std::chrono::sconds>) {
-      return "s";
-    } else {
-      return "";
-    }
-  }
 };
 
 using MicroTimer = Timer<std::chrono::steady_clock, std::chrono::microseconds>;
 using MilliTimer = Timer<std::chrono::steady_clock, std::chrono::milliseconds>;
-using SecondTimer = Timer<std::chrono::steady_clock, std::chrono::seoncds>;
+using SecondTimer = Timer<std::chrono::steady_clock, std::chrono::seconds>;
 
-#endif  // TIMESTAMP_H_
+#endif  // TIMESTAMP_HPP
