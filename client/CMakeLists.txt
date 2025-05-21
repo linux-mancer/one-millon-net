@@ -5,7 +5,7 @@ set(TARGET_NAME client)
 file(GLOB ${PROJECT_NAME}_SRC
     "../depends/include/*.hpp"
     "../depends/src/*.cpp"
-    "main.cpp"
+    "*.cpp"
 )
 
 list (SORT ${PROJECT_NAME}_SRC)

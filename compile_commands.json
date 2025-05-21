@@ -151,6 +151,11 @@
 },
 {
   "directory": "/home/nemausa/one-millon-net/build/client",
+  "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/echo_client.cpp.o -c /home/nemausa/one-millon-net/client/echo_client.cpp",
+  "file": "/home/nemausa/one-millon-net/client/echo_client.cpp"
+},
+{
+  "directory": "/home/nemausa/one-millon-net/build/client",
   "command": "/usr/bin/c++  -DGFLAGS_IS_A_DLL=0 -I/home/nemausa/one-millon-net/depends/include  -O2 -g -DNDEBUG   -Wall -Wextra -Wpedantic -o CMakeFiles/client.dir/main.cpp.o -c /home/nemausa/one-millon-net/client/main.cpp",
   "file": "/home/nemausa/one-millon-net/client/main.cpp"
 }
