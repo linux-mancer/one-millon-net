@@ -68,6 +68,7 @@ void WorkThread(Thread* thread, int id) {
     t0 = timer.Elapsed();
     dt = t0 - t2;
     t2 = t0;
+    // LOG(INFO) << "t0 = " << t0 << " dt = " << dt;
     {
       int count = 0;
       for (int m = 0; m < msg_count; ++m) {

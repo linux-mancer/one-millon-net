@@ -43,7 +43,7 @@ int EchoClient::SendTest(LoginRequest* login) {
   return ret;
 }
 
-bool EchoClient::CheckSend(time_t dt) {
+bool EchoClient::CheckSend(int dt) {
   reset_time_ += dt;
   if (reset_time_ >= send_sleep) {
     reset_time_ -= send_sleep;
@@ -52,6 +52,6 @@ bool EchoClient::CheckSend(time_t dt) {
   return send_count_ > 0;
 }
 
-time_t EchoClient::reset_time() { return reset_time_; }
+int EchoClient::reset_time() { return reset_time_; }
 
-void EchoClient::set_reset_time(time_t t) { reset_time_ = t; }
+void EchoClient::set_reset_time(int t) { reset_time_ = t; }

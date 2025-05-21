@@ -76,7 +76,7 @@ void TcpClient::DispatchMessages() {
 }
 
 int TcpClient::Send(const DataHeader *header) {
-  if (is_connected()) return SOCKET_ERROR;
+  if (!is_connected()) return SOCKET_ERROR;
   return client_->SendData(header);
 }
 
@@ -93,3 +93,5 @@ int TcpClient::RecvData() {
   }
   return len;
 }
+
+bool TcpClient::is_connected() const { return client_ && connected_; }

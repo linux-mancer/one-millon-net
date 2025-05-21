@@ -29,12 +29,12 @@ class EchoClient : public EpollTcpClient {
   EchoClient();
   virtual void OnMessage(DataHeader* header) override;
   int SendTest(LoginRequest* login);
-  bool CheckSend(time_t dt);
+  bool CheckSend(int dt);
 
-  time_t reset_time();
-  void set_reset_time(time_t t);
+  int reset_time();
+  void set_reset_time(int t);
  private:
-  time_t reset_time_ = 0;
+  int reset_time_ = 0;
   int recv_msg_id_ = 1;
   int send_msg_id_ = 1;
   int send_count_ = 0;

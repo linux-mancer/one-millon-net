@@ -85,7 +85,7 @@ int EpollWrapper::Wait(int timeout_ms) {
       LOG(WARNING) << "epoll_wait interrupted by signal";
       return 0;
     }
-    LOG(ERROR) << "epoll_wai failed: " << std::strerror(errno);
+    LOG(ERROR) << "epoll_wait failed: " << std::strerror(errno);
     return -1;
   }
   return n;

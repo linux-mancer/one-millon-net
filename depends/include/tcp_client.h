@@ -30,7 +30,7 @@ class TcpClient {
   int Connect(const std::string& ip, uint16_t port);
   int Send(const DataHeader* header);
   int Send(const char* data, size_t length);
-  bool is_connected() const { return static_cast<bool>(client_) && connected_; }
+  bool is_connected() const;
   int RecvData();
   Client* client() const { return client_.get(); }
 
