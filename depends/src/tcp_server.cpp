@@ -82,7 +82,7 @@ SOCKET TcpServer::Accept() {
   if (INVALID_SOCKET == sock) {
     LOG(ERROR) << "accept INVALID_SOCKET";
   } else {
-    LOG(INFO) << "sockfd = " << sock;
+    // LOG(INFO) << "sockfd = " << sock;
     if (client_accept_ < max_clients_) {
       client_accept_++;
       Network::MakeReuseAddr(sock);

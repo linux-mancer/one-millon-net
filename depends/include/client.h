@@ -17,7 +17,7 @@
 #include "buffer.h"
 #include "message_header.h"
 
-constexpr auto kClientHeartDeadTime = 5000;
+constexpr auto kClientHeartDeadTime = 120000;
 constexpr auto kClientSendBuffTime = 200;
 
 class Client {
