@@ -35,13 +35,15 @@ class Server {
   void AddClient(Client* client);
   size_t GetClientCount() const;
 
-  virtual void SetClientCapacity(int max_clients);
 
  protected:
   virtual bool ProcessNetworkEvents() = 0;
-  virtual void OnClientJoin(Client*) {}
-  virtual void OnClientLeave(Client*);
-  virtual void OnMessage(Client*, DataHeader*) {}
+  virtual void OnClientConnected(Client*);
+  virtual void OnClientDisconnected(Client*);
+  virtual void OnMessageReceived(Client*, DataHeader*);
+  virtual void OnDataReceived(Client* client);
+  virtual void SetClientCapacity(int max_clients);
+
   int ReceiveData(Client* client);
   std::map<SOCKET, Client*>& clients();
 

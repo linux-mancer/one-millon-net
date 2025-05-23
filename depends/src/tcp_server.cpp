@@ -25,7 +25,7 @@ TcpServer::TcpServer()
 TcpServer::~TcpServer() { Close(); }
 
 SOCKET TcpServer::Init() {
-  Netowrk::Init();
+  Network::Init();
   if (INVALID_SOCKET != sockfd_) {
     LOG(INFO) << "Init close old socket " << sockfd_;
     Close();
@@ -35,7 +35,7 @@ SOCKET TcpServer::Init() {
   if (INVALID_SOCKET == sockfd_) {
     LOG(INFO) << "create socket failed..";
   } else {
-    Netowrk::MakeReuseAddr(sockfd_);
+    Network::MakeReuseAddr(sockfd_);
     LOG(INFO) << "create socket " << sockfd_ << " success";
   }
   return sockfd_;
@@ -52,7 +52,7 @@ int TcpServer::Bind(const char *ip, uint16_t port) {
     sin.sin_addr.s_addr = INADDR_ANY;
   }
 
-  Netowrk::MakeReuseAddr(sockfd_);
+  Network::MakeReuseAddr(sockfd_);
 
   int ret = ::bind(sockfd_, (sockaddr *)&sin, sizeof(sin));
   if (SOCKET_ERROR == ret) {
@@ -83,11 +83,11 @@ SOCKET TcpServer::Accept() {
     LOG(ERROR) << "accept INVALID_SOCKET";
   } else {
     if (client_accept_ < max_clients_) {
-      ++client_accept_;
-      Netowrk::MakeReuseAddr(sock);
+      client_accept_++;
+      Network::MakeReuseAddr(sock);
       AddClientToServer(new Client(sock, send_buffer_size_, recv_buffer_size_));
     } else {
-      Netowrk::DestroySocket(sock);
+      Network::DestroySocket(sock);
       LOG(INFO) << "Accept to MaxClient";
     }
   }
@@ -112,23 +112,23 @@ void TcpServer::Close() {
       delete s;
     }
     servers_.clear();
-    Netowrk::DestroySocket(sockfd_);
+    Network::DestroySocket(sockfd_);
     sockfd_ = INVALID_SOCKET;
   }
   LOG(INFO) << "TcpServer Close end";
 }
 
-void TcpServer::OnClientConnected(Client *client_ptr) { ++client_join_; }
+void TcpServer::OnClientConnected(Client *client_ptr) { client_join_++; }
 
 void TcpServer::OnClientDisconnected(Client *client_ptr) {
-  --client_accept_;
-  --client_join_;
+  client_accept_--;
+  client_join_--;
 }
-void TcpServer::OnDataReceived(Client *client) { ++recv_count_; }
+void TcpServer::OnDataReceived(Client *client) { recv_count_++; }
 
 void TcpServer::OnMessageReceived(Server *server, Client *client,
                                   DataHeader *header) {
-  ++msg_count_;
+  msg_count_++;
 }
 
 void TcpServer::PrintMsg() {

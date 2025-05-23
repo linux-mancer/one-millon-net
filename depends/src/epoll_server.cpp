@@ -19,7 +19,7 @@ bool EpollServer::ProcessNetworkEvents() {
 
   int ret = epoll_.Wait(1);
   if (ret < 0) {
-    LOG(ERROR) << "EpollServer ";
+    LOG(ERROR) << "EpollServer ProcessNetworkEvents wait";
     return false;
   } else if (ret == 0) {
     return true;
@@ -50,9 +50,9 @@ void EpollServer::RemoveClient(Client* pclient) {
   if (iter != clients().end()) {
     clients().erase(iter);
   }
-  OnClientLeave(pclient);
+  OnClientDisconnected(pclient);
 }
 
-void EpollServer::OnClientJoin(Client* client) {
+void EpollServer::OnClientConnected(Client* client) {
   epoll_.Register(client->sock_fd(), EPOLLIN, client);
 }

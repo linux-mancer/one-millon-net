@@ -44,7 +44,7 @@ int EpollWrapper::Init(int max_events) {
 
 void EpollWrapper::Close() {
   if (epoll_fd_ > 0) {
-    Netowrk::DestroySocket(epoll_fd_);
+    Network::DestroySocket(epoll_fd_);
     epoll_fd_ = -1;
   }
 

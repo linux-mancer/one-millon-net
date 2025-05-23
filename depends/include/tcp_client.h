@@ -32,7 +32,7 @@ class TcpClient {
   int Send(const char* data, size_t length);
   bool is_connected() const;
   int RecvData();
-  Client* client() const { return client_.get(); }
+  Client* client() const { return client_; }
 
  protected:
   virtual void OnInitSocket() {}
@@ -44,7 +44,7 @@ class TcpClient {
   void DispatchMessages();
 
  private:
-  std::unique_ptr<Client> client_;
+  Client* client_ = nullptr;
   bool connected_ = false;
 };
 

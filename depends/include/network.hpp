@@ -27,7 +27,7 @@ constexpr int kOn = 1;
 constexpr WORD kWinSockVersion = MAKEWORD(2, 2);
 #endif
 
-class Netowrk {
+class Network {
  public:
   static void Init() {
 #ifdef _WIN32

@@ -17,7 +17,7 @@ void EpollTcpServer::Run(Thread* thread) {
     int ret = epoll.Wait(1);
     if (ret < 0) {
       LOG(ERROR) << "EpollTcpServer Run wait exit";
-      thread->Stop();
+      thread->Exit();
       break;
     }
 

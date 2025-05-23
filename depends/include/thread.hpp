@@ -58,6 +58,13 @@ class Thread {
     }
   }
 
+  void Exit() {
+    if (running_) {
+      std::lock_guard<std::mutex> lk(mutex_);
+      running_ = false;
+    }
+  }
+
   bool IsRunning() const noexcept { return running_.load(); }
 
   static void SleepFor(std::chrono::milliseconds ms) noexcept {

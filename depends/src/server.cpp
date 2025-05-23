@@ -67,7 +67,7 @@ void Server::Run(Thread* thread) {
 
     CheckHeartbeats_();
     if (!ProcessNetworkEvents()) {
-      thread->Stop();
+      thread->Exit();
       break;
     }
     DispatchMessage_();
@@ -78,11 +78,11 @@ void Server::Run(Thread* thread) {
 void Server::HandleNewClients_() {
   std::lock_guard<std::mutex> lk(clients_mutex_);
   for (Client* c : new_clients_) {
-    clients_[c->sock_fd()] =c;
+    clients_[c->sock_fd()] = c;
     if (event_handler_) {
       event_handler_->OnClientConnected(c);
     }
-    OnClientJoin(c);
+    OnClientConnected(c);
   }
   new_clients_.clear();
 }
@@ -96,15 +96,11 @@ void Server::CheckHeartbeats_() {
   for (auto it = clients_.begin(); it != clients_.end();) {
     Client* c = it->second;
     if (c->CheckHeart(dt)) {
-      // if (event_handler_) {
-      //   event_handler_->OnClientDisconnected(c);
-      // }
-      OnClientLeave(c);
-      // delete c;
+      OnClientDisconnected(c);
       it = clients_.erase(it);
       continue;
-    } 
-      it++;
+    }
+    it++;
   }
 }
 
@@ -113,10 +109,7 @@ void Server::DispatchMessage_() {
     Client* c = kv.second;
     while (c->HasMsg()) {
       DataHeader* header = c->FrontMsg();
-      if (event_handler_) {
-        event_handler_->OnMessageReceived(this, c, header);
-      }
-      OnMessage(c, header);
+      OnMessageReceived(c, header);
       c->PopFrontMsg();
     }
   }
@@ -138,7 +131,20 @@ std::map<SOCKET, Client*>& Server::clients() {
   return clients_;
 }
 
-void Server::OnClientLeave(Client* client) {
-if (event_handler_)
-    event_handler_->OnClientDisconnected(client);
+void Server::OnClientConnected(Client*) {}
+
+void Server::OnClientDisconnected(Client* client) {
+  if (event_handler_) event_handler_->OnClientDisconnected(client);
+}
+
+void Server::OnMessageReceived(Client* client, DataHeader* header) {
+  if (event_handler_) {
+    event_handler_->OnMessageReceived(this, client, header);
+  }
+}
+
+void Server::OnDataReceived(Client* client) {
+  if (event_handler_) {
+    event_handler_->OnDataReceived(client);
+  }
 }

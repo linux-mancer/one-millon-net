@@ -17,7 +17,7 @@ TcpClient::TcpClient() = default;
 TcpClient::~TcpClient() { Close(); }
 
 int TcpClient::CreateSocket(int send_buffer_size, int recv_buffer_size) {
-  Netowrk::Init();
+  Network::Init();
   if (client_) {
     LOG(INFO) << "Reinitializing socket, closing old socket="
               << client_->sock_fd();
@@ -30,9 +30,10 @@ int TcpClient::CreateSocket(int send_buffer_size, int recv_buffer_size) {
     return SOCKET_ERROR;
   }
 
-  Netowrk::MakeReuseAddr(sock);
-  client_ = std::make_unique<Client>(sock, send_buffer_size, recv_buffer_size);
+  Network::MakeReuseAddr(sock);
+  client_ = new Client(sock, send_buffer_size, recv_buffer_size);
   OnInitSocket();
+
   return sock;
 }
 
@@ -62,8 +63,8 @@ int TcpClient::Connect(const std::string &ip, uint16_t port) {
 
 void TcpClient::Close() {
   if (client_) {
-    client_->Destroy();
-    client_.reset();
+    delete client_;
+    client_ = nullptr;
   }
   connected_ = false;
 }
@@ -86,12 +87,14 @@ int TcpClient::Send(const char *data, size_t length) {
 }
 
 int TcpClient::RecvData() {
-  if (!is_connected()) return 0;
-  int len = client_->RecvData();
-  if (len > 0) {
-    DispatchMessages();
+  if (is_connected()) {
+    int len = client_->RecvData();
+    if (len > 0) {
+      DispatchMessages();
+    }
+    return len;
   }
-  return len;
+  return 0;
 }
 
 bool TcpClient::is_connected() const { return client_ && connected_; }

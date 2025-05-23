@@ -12,7 +12,7 @@ class EpollServer : public Server {
   void RemoveClient(Client* pclient);
 
  protected:
-  virtual void OnClientJoin(Client*) override;
+  virtual void OnClientConnected(Client*) override;
 
  private:
   EpollWrapper epoll_;
