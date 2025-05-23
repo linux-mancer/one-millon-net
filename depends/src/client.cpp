@@ -6,23 +6,23 @@ Client::Client(SOCKET sock_fd, int send_size, int recv_size)
     : send_buffer_(send_size), recv_buffer_(recv_size) {
   static int n = 1;
   id_ = n++;
-  sock_fd_ = sock_fd;
+  socket_fd_ = sock_fd;
   ResetHeartbeat();
   ResetSendbeat();
 }
 
-Client::~Client() { Destroy(); }
+Client::~Client() { Close(); }
 
-void Client::Destroy() {
-  if (INVALID_SOCKET != sock_fd_) {
-    Network::DestroySocket(sock_fd_);
-    sock_fd_ = INVALID_SOCKET;
+void Client::Close() {
+  if (INVALID_SOCKET != socket_fd_) {
+    Network::DestroySocket(socket_fd_);
+    socket_fd_ = INVALID_SOCKET;
   }
 }
 
-SOCKET Client::sock_fd() { return sock_fd_; }
+SOCKET Client::socket_fd() { return socket_fd_; }
 
-int Client::RecvData() { return recv_buffer_.ReadFromSocket(sock_fd_); }
+int Client::RecvData() { return recv_buffer_.ReadFromSocket(socket_fd_); }
 
 bool Client::HasMsg() const { return recv_buffer_.HasData(); }
 
@@ -38,7 +38,7 @@ bool Client::NeedWrite() const { return send_buffer_.NeedWrite(); }
 
 int Client::SendDataReal() {
   ResetSendbeat();
-  return send_buffer_.WriteToSocket(sock_fd_);
+  return send_buffer_.WriteToSocket(socket_fd_);
 }
 
 int Client::SendData(const DataHeader *header) {
@@ -60,7 +60,7 @@ bool Client::CheckHeart(time_t dt) {
   dt_heart_ += dt;
   // LOG(INFO) << "CheckHeart" << dt_heart_;
   if (dt_heart_ >= kClientHeartDeadTime) {
-    LOG(INFO) << "CheckHeart dead:s=" << sock_fd_ << " time=" << dt_heart_;
+    LOG(INFO) << "CheckHeart dead:s=" << socket_fd_ << " time=" << dt_heart_;
     return true;
   }
   return false;

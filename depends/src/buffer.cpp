@@ -1,84 +1,78 @@
 #include "buffer.h"
+#include <cstddef>
+#include <memory>
 #include "cell.h"
 #include "message_header.h"
+#include <algorithm>
 
-Buffer::Buffer(size_t capacity) {
-  size_ = capacity;
-  data_ = new char[size_+1];
-}
+Buffer::Buffer(size_t capacity)
+    : data_(std::make_unique<char[]>(capacity + 1)),
+      capacity_(capacity),
+      write_pos_(0),
+      full_count_(0) {}
 
-Buffer::~Buffer() {
-  if (data_) {
-    delete[] data_;
-    data_ = nullptr;
-  }
-}
+Buffer::~Buffer() {}
 
 bool Buffer::Push(const char* data, size_t length) noexcept {
-  if (head_ + length <= size_) {
-    memcpy(data_ + head_, data, length);
-    head_ += length;
-    if (head_ == SEND_BUFF_SIZE) {
-      ++full_count_;
-    }
-    return true;
-  } else {
+  if (!data || length == 0) return false;
+  if (write_pos_ + length > capacity_) {
+    ++full_count_;
+    return false;
+  }
+  memcpy(data_.get() + write_pos_, data, length);
+  write_pos_ += length;
+  if (write_pos_ == full_count_) {
     ++full_count_;
   }
-  return false;
+  return true;
 }
 
 void Buffer::Consume(size_t bytes) {
-  int n = head_ - bytes;
-  if (n > 0) {
-    memcpy(data_, data_ + bytes, n);
+  if (bytes >= write_pos_) {
+    write_pos_ = 0;
+  } else {
+    size_t remain = write_pos_ - bytes;
+    memmove(data_.get(), data_.get() + bytes, remain);
+    write_pos_ = remain;
   }
-  head_ = n;
-  if (full_count_ > 0) {
-    --full_count_;
-  }
+  if (full_count_ > 0) --full_count_;
 }
 
 int Buffer::WriteToSocket(int sockfd) {
-  int ret = 0;
-  if (head_ > 0 && INVALID_SOCKET != sockfd) {
-    ret = send(sockfd, data_, head_, 0);
-    if (ret <= 0) {
-      LOG(ERROR) << "WriteToSocket: sockf<" << sockfd << "> size<" << size_
-                 << "> head<" << head_ << "> ret<" << ret;
-      return SOCKET_ERROR;
-    }
-    if (ret == head_) {
-      head_ = 0;
-    } else {
-      head_ -= ret;
-      memcpy(data_, data_ + ret, head_);
-    }
-    full_count_ = 0;
+  if (write_pos_ == 0 || INVALID_SOCKET == sockfd) return 0;
+  size_t sent = send(sockfd, data_.get(), write_pos_, 0);
+  if (sent <= 0) {
+    PLOG(ERROR) << "WriteToSocket failed on sockfd=" << sockfd
+                << " write_pos=" << write_pos_;
+    return SOCKET_ERROR;
   }
-  return ret;
+  if (static_cast<size_t>(sent) == write_pos_) {
+    write_pos_ = 0;
+  } else {
+    write_pos_ -= sent;
+    memmove(data_.get(), data_.get() + sent, write_pos_);
+  }
+  full_count_ = 0;
+  return static_cast<int>(sent);
 }
 
 int Buffer::ReadFromSocket(int sockfd) {
-  if (size_ - head_ > 0) {
-    char* sz_recv = data_ + head_;
-    int len = static_cast<int>(recv(sockfd, sz_recv, size_ - head_, 0));
-    if (len <= 0) {
-      // LOG(ERROR) << "ReadFromSocket:sockfd<" << sockfd << "> size<" << size_
-      //            << "> head<" << head_ << "> len<" << len << ">";
-      return SOCKET_ERROR;
-    }
-    head_ += len;
-    data_[head_] = 0;
-    return len;
+  if (capacity_ - write_pos_ == 0) return 0;
+  char* dst = data_.get() + write_pos_;
+  ssize_t len = recv(sockfd, dst, capacity_ - write_pos_, 0);
+  if (len <= 0) {
+    // PLOG(ERROR) << "ReadFromSocket failed";
+    return SOCKET_ERROR;
   }
-  return 0;
+  write_pos_ += len;
+  data_[write_pos_] = 0;
+  return static_cast<int>(len);
 }
 
 bool Buffer::HasData() const {
-  if (head_ >= sizeof(DataHeader)) {
-    DataHeader* header = (DataHeader*)data_;
-    return head_ >= header->data_length;
+  if (write_pos_ >= sizeof(DataHeader)) {
+    const DataHeader* header = reinterpret_cast<const DataHeader*>(data_.get());
+    return write_pos_ >= header->data_length;
   }
   return false;
 }

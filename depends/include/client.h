@@ -24,7 +24,7 @@ class Client {
  public:
   Client(SOCKET sock_fd, int send_size, int recv_size);
   ~Client();
-  void Destroy();
+  void Close();
 
   int RecvData();
   bool HasMsg() const;
@@ -41,7 +41,7 @@ class Client {
   bool CheckHeart(time_t dt);
   bool CheckSend(time_t dt);
 
-  SOCKET sock_fd();
+  SOCKET socket_fd();
   int recv_msg_id();
   int recv_msg_id_next();
   int send_msg_id();
@@ -53,7 +53,7 @@ class Client {
   int recv_msg_id_ = 1;
   int send_msg_id_ = 1;
 
-  SOCKET sock_fd_;
+  SOCKET socket_fd_;
   Buffer send_buffer_;
   Buffer recv_buffer_;
   time_t dt_heart_;

@@ -11,7 +11,7 @@ Server::~Server() {
 
 void Server::SetId(int id) {
   id_ = id;
-  task_server_.set_server_id(id);
+  task_server_.server_id(id);
 }
 
 void Server::SetClientCapacity(int max_clients) {}
@@ -76,7 +76,7 @@ void Server::Run(Thread* thread) {
 void Server::HandleNewClients_() {
   std::lock_guard<std::mutex> lk(clients_mutex_);
   for (Client* c : new_clients_) {
-    clients_[c->sock_fd()] = c;
+    clients_[c->socket_fd()] = c;
     if (event_handler_) {
       event_handler_->OnClientConnected(c);
     }

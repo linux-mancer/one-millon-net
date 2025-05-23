@@ -20,7 +20,7 @@ int TcpClient::CreateSocket(int send_buffer_size, int recv_buffer_size) {
   Network::Init();
   if (client_) {
     LOG(INFO) << "Reinitializing socket, closing old socket="
-              << client_->sock_fd();
+              << client_->socket_fd();
     Close();
   }
 
@@ -50,7 +50,7 @@ int TcpClient::Connect(const std::string &ip, uint16_t port) {
     return SOCKET_ERROR;
   }
 
-  int ret = ::connect(client_->sock_fd(), reinterpret_cast<sockaddr *>(&addr),
+  int ret = ::connect(client_->socket_fd(), reinterpret_cast<sockaddr *>(&addr),
                       sizeof(addr));
   if (ret < 0) {
     PLOG(ERROR) << "connect(" << ip << ":" << port << ") failed";

@@ -27,7 +27,7 @@ class TaskServer {
   void AddTask(Task task);
   void Start();
   void Stop();
-  void set_server_id(int id);
+  void server_id(int id);
 
  private:
   void RunLoop(Thread *thread);

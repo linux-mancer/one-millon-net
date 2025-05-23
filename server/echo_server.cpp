@@ -27,7 +27,7 @@ void EchoServer::OnMessageReceived(Server* server, Client* client,
       LoginRequest* login = static_cast<LoginRequest*>(header);
       if (check_msg_id_) {
         if (login->msg_id != client->recv_msg_id()) {
-          LOG(ERROR) << "OnMessageReceived socket<" << client->sock_fd()
+          LOG(ERROR) << "OnMessageReceived socket<" << client->socket_fd()
                      << "> recv_msg_id<" << login->msg_id;
         }
         client->recv_msg_id_next();
@@ -38,7 +38,7 @@ void EchoServer::OnMessageReceived(Server* server, Client* client,
         ret.msg_id = client->send_msg_id();
         if (SOCKET_ERROR == client->SendData(&ret)) {
           if (send_full_) {
-            LOG(ERROR) << "Scoket<" << client->sock_fd() << "> send full";
+            LOG(ERROR) << "Scoket<" << client->socket_fd() << "> send full";
           }
         } else {
           client->send_msg_id_next();

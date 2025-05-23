@@ -33,7 +33,7 @@ bool EpollServer::ProcessNetworkEvents() {
   for (int i = 0; i < n; ++i) {
     auto& ev = events[i];
     Client* pclient = static_cast<Client*>(ev.data.ptr);
-    int fd = pclient->sock_fd();
+    int fd = pclient->socket_fd();
 
     if (ev.events & (EPOLLERR | EPOLLHUP)) {
       LOG(INFO) << "Client fd=" << fd << " disconnected (err/hub)";
@@ -57,13 +57,13 @@ bool EpollServer::ProcessNetworkEvents() {
 }
 
 void EpollServer::RemoveClient(Client* client) {
-  int fd = client->sock_fd();
+  int fd = client->socket_fd();
   epoll_.Unregister(fd);
-  ::close(fd);
+  client->Close();
   clients().erase(fd);
   OnClientDisconnected(client);
 }
 
 void EpollServer::OnClientConnected(Client* client) {
-  epoll_.Register(client->sock_fd(), EPOLLIN, client);
+  epoll_.Register(client->socket_fd(), EPOLLIN, client);
 }

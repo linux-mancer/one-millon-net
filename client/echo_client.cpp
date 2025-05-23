@@ -18,7 +18,7 @@ void EchoClient::OnMessage(DataHeader* header) {
       LoginResponse* login = static_cast<LoginResponse*>(header);
       if (check_msg_id_) {
         if (login->msg_id != recv_msg_id_) {
-          LOG(ERROR) << "OnMessage socket<" << client()->sock_fd() << ">msg id<"
+          LOG(ERROR) << "OnMessage socket<" << client()->socket_fd() << ">msg id<"
                      << login->msg_id << ">recv_msg_id<" << recv_msg_id_ << "> "
                      << login->msg_id - recv_msg_id_;
         }

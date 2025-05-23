@@ -4,7 +4,7 @@
 
 void EpollTcpClient::OnInitSocket() {
   epoll_.Init(1);
-  epoll_.Register(client()->sock_fd(), EPOLLIN, client());
+  epoll_.Register(client()->socket_fd(), EPOLLIN, client());
 }
 
 void EpollTcpClient::Close() {
@@ -22,7 +22,7 @@ bool EpollTcpClient::Run(int timeout_us) {
   if (client_ptr->NeedWrite()) {
     events |= EPOLLOUT;
   }
-  epoll_.Modify(client_ptr->sock_fd(), events, client_ptr);
+  epoll_.Modify(client_ptr->socket_fd(), events, client_ptr);
 
   int n = epoll_.Wait(timeout_us);
   if (n < 0) {

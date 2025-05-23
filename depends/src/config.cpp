@@ -42,12 +42,19 @@ std::string Config::GetString(const std::string& key,
 }
 
 int Config::GetInt(const std::string& key, int default_value) const noexcept {
-  auto it = kv_.find(std::string(key));
+  auto it = kv_.find(key);
   if (it != kv_.end()) {
-    int v = std::atoi(it->second.c_str());
-    LOG(INFO) << key << "=" << v;
-    return v;
+    try {
+      int v = std::stoi(it->second);
+      LOG(INFO) << "Config GetInt " << key << "=" << v;
+      return v;
+    } catch (const std::exception&) {
+      LOG(ERROR) << "Config GetInt invalid int for " << key << " = "
+                 << it->second;
+    }
   }
+  LOG(INFO) << "Config GetInt " << key
+            << " not found, use default=" << default_value;
   return default_value;
 }
 

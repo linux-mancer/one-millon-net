@@ -12,7 +12,7 @@ void TaskServer::Start() {
   thread_.Start(nullptr, [this](Thread* pthread) { RunLoop(pthread); });
 }
 
-void TaskServer::set_server_id(int id) {
+void TaskServer::server_id(int id) {
   server_id_ = id;
 }
 void TaskServer::Stop() { thread_.Stop(); }
