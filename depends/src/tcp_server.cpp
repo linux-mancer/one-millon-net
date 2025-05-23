@@ -20,7 +20,7 @@ TcpServer::TcpServer()
           Config::GetInstance().GetInt("send_buffer_size", SEND_BUFF_SIZE)),
       recv_buffer_size_(
           Config::GetInstance().GetInt("recv_buffer_size", RECV_BUFF_SIZE)),
-      max_clients_(Config::GetInstance().GetInt("max_client", 100000)) {}
+      max_clients_(Config::GetInstance().GetInt("max_clients", 100000)) {}
 
 TcpServer::~TcpServer() { Close(); }
 
@@ -82,6 +82,7 @@ SOCKET TcpServer::Accept() {
   if (INVALID_SOCKET == sock) {
     LOG(ERROR) << "accept INVALID_SOCKET";
   } else {
+    LOG(INFO) << "sockfd = " << sock;
     if (client_accept_ < max_clients_) {
       client_accept_++;
       Network::MakeReuseAddr(sock);

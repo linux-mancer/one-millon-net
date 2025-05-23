@@ -14,9 +14,7 @@ void Server::SetId(int id) {
   task_server_.set_server_id(id);
 }
 
-void Server::SetClientCapacity(int max_clients) {
-  client_capacity_ = max_clients;
-}
+void Server::SetClientCapacity(int max_clients) {}
 
 void Server::SetEventHandler(NetworkEventListener* handler) {
   event_handler_ = handler;
@@ -120,6 +118,7 @@ void Server::ClearAllClients_() {
     delete kv.second;
   }
   clients_.clear();
+
   for (Client* c : new_clients_) {
     delete c;
   }

@@ -4,7 +4,7 @@
 
 Buffer::Buffer(size_t capacity) {
   size_ = capacity;
-  data_ = new char[size_];
+  data_ = new char[size_+1];
 }
 
 Buffer::~Buffer() {
@@ -48,7 +48,7 @@ int Buffer::WriteToSocket(int sockfd) {
                  << "> head<" << head_ << "> ret<" << ret;
       return SOCKET_ERROR;
     }
-    if (ret >= 0 && static_cast<size_t>(ret) == head_) {
+    if (ret == head_) {
       head_ = 0;
     } else {
       head_ -= ret;
@@ -64,11 +64,12 @@ int Buffer::ReadFromSocket(int sockfd) {
     char* sz_recv = data_ + head_;
     int len = static_cast<int>(recv(sockfd, sz_recv, size_ - head_, 0));
     if (len <= 0) {
-      LOG(ERROR) << "ReadFromSocket:sockfd<" << sockfd << "> size<" << size_
-                 << "> head<" << head_ << "> len<" << len << ">";
+      // LOG(ERROR) << "ReadFromSocket:sockfd<" << sockfd << "> size<" << size_
+      //            << "> head<" << head_ << "> len<" << len << ">";
       return SOCKET_ERROR;
     }
     head_ += len;
+    data_[head_] = 0;
     return len;
   }
   return 0;

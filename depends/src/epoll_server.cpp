@@ -1,6 +1,9 @@
 #include "epoll_server.h"
 #include <sys/epoll.h>
+#include <cstdint>
+#include "cell.h"
 #include "client.h"
+#include <glog/logging.h>
 
 EpollServer::~EpollServer() { Close(); }
 
@@ -9,48 +12,56 @@ void EpollServer::SetClientCapacity(int max_clients) {
 }
 
 bool EpollServer::ProcessNetworkEvents() {
-  for (auto iter : clients()) {
-    if (iter.second->NeedWrite()) {
-      epoll_.Modify(iter.second->sock_fd(), EPOLLIN | EPOLLOUT, iter.second);
-    } else {
-      epoll_.Modify(iter.second->sock_fd(), EPOLLIN, iter.second);
+  for (const auto& [fd, client] : clients()) {
+    uint32_t mask = EPOLLIN;
+    if (client->NeedWrite()) {
+      mask |= EPOLLOUT;
     }
+    epoll_.Modify(fd, mask, client);
   }
 
-  int ret = epoll_.Wait(1);
-  if (ret < 0) {
+  int n = epoll_.Wait(1);
+  if (n < 0) {
     LOG(ERROR) << "EpollServer ProcessNetworkEvents wait";
     return false;
-  } else if (ret == 0) {
+  } else if (n == 0) {
+    // 超时，无事件
     return true;
   }
 
   auto events = epoll_.events();
-  for (int i = 0; i < ret; ++i) {
-    Client* pclient = static_cast<Client*>(events[i].data.ptr);
-    if (pclient) {
-      if (events[i].events & EPOLLIN) {
-        if (SOCKET_ERROR == ReceiveData(pclient)) {
-          RemoveClient(pclient);
-          continue;
-        }
-      }
-      if (events[i].events & EPOLLOUT) {
-        if (SOCKET_ERROR == pclient->SendDataReal()) {
-          RemoveClient(pclient);
-        }
-      }
+  for (int i = 0; i < n; ++i) {
+    auto& ev = events[i];
+    Client* pclient = static_cast<Client*>(ev.data.ptr);
+    int fd = pclient->sock_fd();
+
+    if (ev.events & (EPOLLERR | EPOLLHUP)) {
+      LOG(INFO) << "Client fd=" << fd << " disconnected (err/hub)";
+      // RemoveClient(pclient);
+      continue;
+    }
+
+    if ((ev.events & EPOLLIN) && ReceiveData(pclient) == SOCKET_ERROR) {
+      // LOG(ERROR) << "Receive error on fd=" << fd;
+      RemoveClient(pclient);
+      continue;
+    }
+
+    if ((ev.events & EPOLLOUT) && pclient->SendDataReal() == SOCKET_ERROR) {
+      // LOG(ERROR) << "Send error on fd=" << fd;
+      RemoveClient(pclient);
+      continue;
     }
   }
   return true;
 }
 
-void EpollServer::RemoveClient(Client* pclient) {
-  auto iter = clients().find(pclient->sock_fd());
-  if (iter != clients().end()) {
-    clients().erase(iter);
-  }
-  OnClientDisconnected(pclient);
+void EpollServer::RemoveClient(Client* client) {
+  int fd = client->sock_fd();
+  epoll_.Unregister(fd);
+  ::close(fd);
+  clients().erase(fd);
+  OnClientDisconnected(client);
 }
 
 void EpollServer::OnClientConnected(Client* client) {
