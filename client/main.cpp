@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
   Config::GetInstance().Init(argc, argv);
 
   std::string ip_str = Config::GetInstance().GetString("ip", "127.0.0.1");
-  const char* sz_ip = ip_str.c_str();
+  sz_ip = ip_str.c_str();
   port = Config::GetInstance().GetInt("port", 4567);
   thread_count = Config::GetInstance().GetInt("thread_count", 1);
   client_count = Config::GetInstance().GetInt("client_count", 10);
