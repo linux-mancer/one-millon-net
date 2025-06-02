@@ -11,6 +11,11 @@ file(GLOB ${PROJECT_NAME}_SRC
 list (SORT ${PROJECT_NAME}_SRC)
 add_executable(${TARGET_NAME} ${${PROJECT_NAME}_SRC} )
 
+target_include_directories(${TARGET_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/third_party/json/include/
+)
+
+
 find_package(Threads REQUIRED)
 find_package(glog REQUIRED)
 target_link_libraries(${TARGET_NAME}

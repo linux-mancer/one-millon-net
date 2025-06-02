@@ -6,6 +6,7 @@
 #include <string>
 #include "echo_server.h"
 #include "config.hpp"
+#include <nlohmann/json.hpp>
 
 int main(int argc, char* argv[]) {
   Config::GetInstance().Init(argc, argv);
@@ -26,6 +27,11 @@ int main(int argc, char* argv[]) {
   server.Bind(sz_ip, port);
   server.Listen(SOMAXCONN);
   server.Start(thread_count);
+
+  nlohmann::json j;
+  j["name"] = "Bill";
+  j["age"] = 18;
+  std::cout << j.dump(2) << std::endl;
 
   while (true) {
     char cmd_buf[256] = {};
